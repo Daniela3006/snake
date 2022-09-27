@@ -53,7 +53,7 @@ for (let i = 0; i < snakeBody.length; i++) {
     snakeBody[i].classList.add('snakeBody');
 }
 
-snakeBody[0].classList.add('head');
+snakeBody[0].classList.add('head');// pervii elem dob class head
 
 //na dannii moment afisirueta snaciala 2 elem tela zatem golova
 
@@ -81,26 +81,63 @@ function createMouse() {
 createMouse();
 
 
+
+
+let direction = 'right';//peremennaia dlia function move stob zmeia dvigalasi v raznie napravlenia
+
+
 //na dannii monent ofesitueta miska i zmeia
 
 //naucim zmeiu dvigata v pravo
 
 function move() {
 
-    let snakeCoordinates = [snakeBody[0].getAtrribute('posX'), snakeBody[0].getAtrribute('posY')];
+    let snakeCoordinates = [snakeBody[0].getAttribute('posX'), snakeBody[0].getAttribute('posY')];
 
     snakeBody[0].classList.remove('head');//udaliaem golovu
     snakeBody[snakeBody.length - 1].classList.remove('snakeBody');//udaliaem class snakeBody dlia posledneva elem => dlia hvosta zmeiki
     snakeBody.pop();//udaliaem poslednii elem masiva
 
-    snakeBody.unshift(document.querySelector('[posX="' + (+snakeCoordinates[0] + 1) + '"][posY="' + snakeCoordinates[1] + '"]'));//s metodom unshift na pervoe mesto masiva 2 elem primer: golova imeet coord x+1,y bila golova na coord 2,2 stanet na 3,2
+    if (snakeCoordinates[0] < 10) {
+        snakeBody.unshift(document.querySelector('[posX="' + (+snakeCoordinates[0] + 1) + '"][posY="' + snakeCoordinates[1] + '"]'));
+    } //s metodom unshift na pervoe mesto masiva 2 elem primer: golova imeet coord x+1,y bila golova na coord 2,2 stanet na 3,2
+
+
+    //esli snakeCoordinates[0]=> znacenie po osi X <10  to mi idiom na adnu iceicu v prava
+    //else no esli=10 to nam nado vernuta nazat s protivapalojnovo craia posX=1
+
+    else {
+        snakeBody.unshift(document.querySelector('[posX="1"][posY="' + snakeCoordinates[1] + '"]'));
+
+    }
 
     snakeBody[0].classList.add('head');//dobav class head
     // a vsem elem masiva mi verniom class snakeBody
     for (let i = 0; i < snakeBody.length; i++) {
         snakeBody[i].classList.add('snakeBody');
     }
-
 }
 let interval = setInterval(move, 300); //stob zarabotala functia povtoriaem function move()=> cajdie 300ms
+
+
+//seiceas zmeika dvigaeta do conta reada i golova propadaet i ona ostanavlivaeta
+
+//sozdali peremennuiu direction 86 read
+
+
+//obrabotcik sobitii(po najatiu na strelki meniaem napravlenie)
+window.addEventListener('keydown', function (e) {
+    if (e.key == "ArrowLeft") {
+        console.log('left');
+    }
+    else if (e.key == "ArrowUp") {
+        console.log('up');
+    }
+    else if (e.key == "ArrowRight") {
+        console.log('right');
+    }
+    else if (e.key == "ArrowDown") {
+        console.log('down');
+    }
+});
 
