@@ -98,18 +98,57 @@ function move() {
     snakeBody[snakeBody.length - 1].classList.remove('snakeBody');//udaliaem class snakeBody dlia posledneva elem => dlia hvosta zmeiki
     snakeBody.pop();//udaliaem poslednii elem masiva
 
-    if (snakeCoordinates[0] < 10) {
-        snakeBody.unshift(document.querySelector('[posX="' + (+snakeCoordinates[0] + 1) + '"][posY="' + snakeCoordinates[1] + '"]'));
-    } //s metodom unshift na pervoe mesto masiva 2 elem primer: golova imeet coord x+1,y bila golova na coord 2,2 stanet na 3,2
+    //pohod v prava
+    if (direction = 'ArrowRight') {
+        if (snakeCoordinates[0] < 10) {
+            snakeBody.unshift(document.querySelector('[posX="' + (+snakeCoordinates[0] + 1) + '"][posY="' + snakeCoordinates[1] + '"]'));
+        } //s metodom unshift na pervoe mesto masiva 2 elem primer: golova imeet coord x+1,y bila golova na coord 2,2 stanet na 3,2
 
 
-    //esli snakeCoordinates[0]=> znacenie po osi X <10  to mi idiom na adnu iceicu v prava
-    //else no esli=10 to nam nado vernuta nazat s protivapalojnovo craia posX=1
+        //esli snakeCoordinates[0]=> znacenie po osi X <10  to mi idiom na adnu iceicu v prava
+        //else no esli=10 to nam nado vernuta nazat s protivapalojnovo craia posX=1
 
-    else {
-        snakeBody.unshift(document.querySelector('[posX="1"][posY="' + snakeCoordinates[1] + '"]'));
-
+        else {
+            snakeBody.unshift(document.querySelector('[posX="1"][posY="' + snakeCoordinates[1] + '"]'));
+        }
     }
+
+    //pohod v levo 
+    else if (direction = 'ArrowLeft') {
+        if (snakeCoordinates[0] > 1) {
+            snakeBody.unshift(document.querySelector('[posX="' + (+snakeCoordinates[0] - 1) + '"][posY="' + snakeCoordinates[1] + '"]'));
+        }
+
+        else {
+            snakeBody.unshift(document.querySelector('[posX="10"][posY="' + snakeCoordinates[1] + '"]'));
+        }
+    }
+
+    //
+    else if (direction = 'ArrowUp') {
+        if (snakeCoordinates[1] < 10) {
+            snakeBody.unshift(document.querySelector('[posX="' + snakeCoordinates[0] + '"][posY="' + (+snakeCoordinates[1]+1) + '"]'));
+        }
+        else {
+            snakeBody.unshift(document.querySelector('[posX="+snakeCoordinates[0]"][posY=" 1"]'));
+        }
+    }
+
+    //
+    else if (direction = 'ArrowDown') {
+        if (snakeCoordinates[1] > 1) {
+            snakeBody.unshift(document.querySelector('[posX="' + snakeCoordinates[0] + '"][posY="' + (+snakeCoordinates[1] -1) + '"]'));
+        }
+        else {
+            snakeBody.unshift(document.querySelector('[posX="+snakeCoordinates[0]"][posY="10"]'));
+        }
+    }
+
+
+
+
+
+
 
     snakeBody[0].classList.add('head');//dobav class head
     // a vsem elem masiva mi verniom class snakeBody
@@ -127,17 +166,17 @@ let interval = setInterval(move, 300); //stob zarabotala functia povtoriaem func
 
 //obrabotcik sobitii(po najatiu na strelki meniaem napravlenie)
 window.addEventListener('keydown', function (e) {
-    if (e.key == "ArrowLeft") {
-        console.log('left');
+    if (e.key == "ArrowLeft" && direction != 'ArrowRight') {//escli cliuci=ArrowLeft ili !prava => vipolneaet v levo......ostalinie tak je
+        direction = 'ArrowLeft';
     }
-    else if (e.key == "ArrowUp") {
-        console.log('up');
+    else if (e.key == "ArrowUp" && direction != 'ArrowDown') {
+        direction = 'ArrowUp';
     }
-    else if (e.key == "ArrowRight") {
-        console.log('right');
+    else if (e.key == "ArrowRight" && direction != 'ArrowLeft') {
+        direction = 'ArrowRight';
     }
-    else if (e.key == "ArrowDown") {
-        console.log('down');
+    else if (e.key == "ArrowDown" && direction != 'ArrowUp') {
+        direction = 'ArrowDown';
     }
 });
 
