@@ -1,3 +1,22 @@
+
+let overlay = document.querySelector('.overlay');
+let modal = document.querySelector('.modal');
+
+modal.addEventListener('click', function (e) {
+    if (e.target.classList.contains('easy')) {
+        
+    } 
+    if (e.target.classList.contains('button')) {
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+        startGame();
+
+    }
+
+})
+
+
+function startGame(){
 let field = document.createElement('div');// sozdaiom div
 document.body.appendChild(field);//dobov evo v html
 field.classList.add('field');//dobov atomu clasu stili iz css
@@ -83,7 +102,23 @@ createMouse();
 
 
 
-let direction = 'right';//peremennaia dlia function move stob zmeia dvigalasi v raznie napravlenia
+let direction = 'ArrowRight';//peremennaia dlia function move stob zmeia dvigalasi v raznie napravlenia
+let steps = false;//peremen dlia tovo sto esli igrati sliscom bistro to ne otobrajaiuta tac bistra najatie strelki na dvijenie zmei i ona sama v sebia uperaeta  173 str
+
+//dobovl sciot igri
+
+let input = document.createElement('input');//sozdaiom imput
+document.body.appendChild(input);//dob v body
+input.style.cssText = `
+margin: auto;
+margin-top: 40px;
+font-size: 30px;
+display: block;
+`;
+
+let score = 0;
+input.value = `Ваши очки: ${score} `;
+
 
 
 //na dannii monent ofesitueta miska i zmeia
@@ -99,7 +134,7 @@ function move() {
     snakeBody.pop();//udaliaem poslednii elem masiva
 
     //pohod v prava
-    if (direction = 'ArrowRight') {
+    if (direction == 'ArrowRight') {
         if (snakeCoordinates[0] < 10) {
             snakeBody.unshift(document.querySelector('[posX="' + (+snakeCoordinates[0] + 1) + '"][posY="' + snakeCoordinates[1] + '"]'));
         } //s metodom unshift na pervoe mesto masiva 2 elem primer: golova imeet coord x+1,y bila golova na coord 2,2 stanet na 3,2
@@ -114,7 +149,7 @@ function move() {
     }
 
     //pohod v levo 
-    else if (direction = 'ArrowLeft') {
+    else if (direction == 'ArrowLeft') {
         if (snakeCoordinates[0] > 1) {
             snakeBody.unshift(document.querySelector('[posX="' + (+snakeCoordinates[0] - 1) + '"][posY="' + snakeCoordinates[1] + '"]'));
         }
@@ -125,36 +160,56 @@ function move() {
     }
 
     //
-    else if (direction = 'ArrowUp') {
+    else if (direction == 'ArrowUp') {
         if (snakeCoordinates[1] < 10) {
-            snakeBody.unshift(document.querySelector('[posX="' + snakeCoordinates[0] + '"][posY="' + (+snakeCoordinates[1]+1) + '"]'));
+            snakeBody.unshift(document.querySelector('[posX="' + snakeCoordinates[0] + '"][posY="' + (+snakeCoordinates[1] + 1) + '"]'));
+        } else {
+            snakeBody.unshift(document.querySelector('[posX="' + snakeCoordinates[0] + '"][posY="1"]'));
         }
-        else {
-            snakeBody.unshift(document.querySelector('[posX="+snakeCoordinates[0]"][posY=" 1"]'));
-        }
-    }
 
+    }
     //
-    else if (direction = 'ArrowDown') {
+    else if (direction == 'ArrowDown') {
         if (snakeCoordinates[1] > 1) {
-            snakeBody.unshift(document.querySelector('[posX="' + snakeCoordinates[0] + '"][posY="' + (+snakeCoordinates[1] -1) + '"]'));
+            snakeBody.unshift(document.querySelector('[posX="' + snakeCoordinates[0] + '"][posY="' + (snakeCoordinates[1] - 1) + '"]'));
+        } else {
+            snakeBody.unshift(document.querySelector('[posX="' + snakeCoordinates[0] + '"][posY="10"]'));
         }
-        else {
-            snakeBody.unshift(document.querySelector('[posX="+snakeCoordinates[0]"][posY="10"]'));
-        }
+
     }
 
+    //cogda coord miski =coord zmeia nado : 1.misca isceznet 2. zmeia udlenita 3. misca poiavita
+    if (snakeBody[0].getAttribute('posX') == mouse.getAttribute('posX') && snakeBody[0].getAttribute('posY') == mouse.getAttribute('posY')) {//esli coord x,y sovpadaiut u aboih
+        mouse.classList.remove('mouse');//ubiraem class mouse stom ne otabrajalasi miska
+        let a = snakeBody[snakeBody.length - 1].getAttribute('posX');//peremennoi a daiom znacenie poslednei eceike zmei (x)
+        let b = snakeBody[snakeBody.length - 1].getAttribute('posY');//peremennoi a daiom znacenie poslednei eceike zmei (y)
+        snakeBody.push(document.querySelector('[posX="' + a + '"][posY="' + b + '"]'));//dob zmeike eceiku s coord a,b=> posledniaia i predposl eceika imeiut odinakv coord
+        createMouse();//sozdaiom opiati misku
+        score++;
+        input.value = `Ваши очки: ${score} `;
+    }
+
+    //pravila igri (esli zmeia zahodit na eceiku snakeBodi(toisti zanetuiu eceicu svoim je telom)to igra oconcena)
+
+    if (snakeBody[0].classList.contains('snakeBody')) {//esli snakeBody[0]golova soderjit atot clas=>igra oconcena]
+        setTimeout(() => { alert(`Игра окончена. Ваши очки: ${score}`); }, 200)//alert poevl posle 200ms
 
 
+        clearInterval(interval);//perestaiot zapuscata functia  (let interval=setInterval)
+        snakeBody[0].style.background = 'url(over.png) center no-repeat';//meniaem cartincu golovi zmeiki
+        snakeBody[0].style.backgroundSize = "cover";
 
-
-
+    }
 
     snakeBody[0].classList.add('head');//dobav class head
     // a vsem elem masiva mi verniom class snakeBody
     for (let i = 0; i < snakeBody.length; i++) {
         snakeBody[i].classList.add('snakeBody');
     }
+
+    steps = true;//188stroka
+
+
 }
 let interval = setInterval(move, 300); //stob zarabotala functia povtoriaem function move()=> cajdie 300ms
 
@@ -166,17 +221,28 @@ let interval = setInterval(move, 300); //stob zarabotala functia povtoriaem func
 
 //obrabotcik sobitii(po najatiu na strelki meniaem napravlenie)
 window.addEventListener('keydown', function (e) {
-    if (e.key == "ArrowLeft" && direction != 'ArrowRight') {//escli cliuci=ArrowLeft ili !prava => vipolneaet v levo......ostalinie tak je
-        direction = 'ArrowLeft';
+    //iznacialino steps=false v functii dvijenia move steps-u prisvaev znacenie true; i nije uslovie esli steps=true to tolico togda mojno najimati na knopki
+    //toisti snaciala on delaet deistvie a patom vipolneaet e.key
+    //posle cajd najatia na strelku steps=false stob ato uslovie povtorealosi pri cajdom najatii
+    if (steps == true) {
+        if (e.key == "ArrowLeft" && direction != 'ArrowRight') {//escli cliuci=ArrowLeft ili !prava => vipolneaet v levo......ostalinie tak je
+            direction = 'ArrowLeft';
+            steps = false;
+        }
+        else if (e.key == "ArrowUp" && direction != 'ArrowDown') {
+            direction = 'ArrowUp';
+            steps = false;
+        }
+        else if (e.key == "ArrowRight" && direction != 'ArrowLeft') {
+            direction = 'ArrowRight';
+            steps = false;
+        }
+        else if (e.key == "ArrowDown" && direction != 'ArrowUp') {
+            direction = 'ArrowDown';
+            steps = false;
+        }
     }
-    else if (e.key == "ArrowUp" && direction != 'ArrowDown') {
-        direction = 'ArrowUp';
-    }
-    else if (e.key == "ArrowRight" && direction != 'ArrowLeft') {
-        direction = 'ArrowRight';
-    }
-    else if (e.key == "ArrowDown" && direction != 'ArrowUp') {
-        direction = 'ArrowDown';
-    }
+
 });
 
+}
